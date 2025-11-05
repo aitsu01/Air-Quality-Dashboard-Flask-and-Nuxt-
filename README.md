@@ -100,6 +100,30 @@ pip install flask flask-cors requests
 python server.app.py
 
 
+##  Installazione Frontend (Nuxt 4 + Tailwind 4) ##
+
+Il frontend è sviluppato in **Nuxt 4** (basato su Vue 3) e utilizza **Tailwind CSS v4** per lo stile.  
+Segue un’architettura moderna e completamente *responsive* per visualizzare le stazioni e i dettagli sulla qualità dell’aria.
+
+---
+
+###  Installazione pacchetti
+
+Apri un terminale nella cartella `frontend` e installa le dipendenze:
+
+```bash
+cd frontend
+npm install
+
+Avvia il server di sviluppo:
+
+npm run dev
+
+accedi al server locale:
+
+http://localhost:3000
+
+
 #Troubleshoting#
 
 Configurazione corretta di Tailwind v4 (molto importante)
