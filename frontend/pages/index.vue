@@ -1,9 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-10 px-4">
+
+ 
+
     <!-- Header -->
     <header class="text-center mb-8">
       <h1 class="text-3xl font-bold text-green-700 mb-1">
-        🌿 Air Quality Dashboard
+         Dashboard qualità dell'aria
       </h1>
       <p class="text-gray-500 text-sm">Stazioni di monitoraggio</p>
     </header>
