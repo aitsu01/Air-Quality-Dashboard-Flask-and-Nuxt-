@@ -102,7 +102,7 @@ const formatDate = (date) => {
 
 onMounted(async () => {
   try {
-    const res = await fetch(`http://localhost:5000/api/stations/${stationId}`)
+    const res = await fetch(`http://localhost:5000/api/station/${stationId}`)
     const data = await res.json()
 
     if (data.error) throw new Error(data.error)
@@ -128,3 +128,4 @@ onMounted(async () => {
   }
 })
 </script>
+
