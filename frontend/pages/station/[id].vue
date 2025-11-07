@@ -14,7 +14,7 @@
         {{ stationData.name }}
       </h1>
       <p class="text-gray-500">
-        📍 {{ stationData.site }} – {{ stationData.address }}
+         {{ stationData.site }} – {{ stationData.address }}
       </p>
     </div>
 
@@ -50,7 +50,7 @@
           <table class="min-w-full text-sm border border-gray-200 rounded-lg">
             <thead class="bg-gray-100 text-gray-700">
               <tr>
-                <th class="border p-2 text-left">📅 Giorno</th>
+                <th class="border p-2 text-left"> Giorno</th>
                 <th class="border p-2 text-left">Min</th>
                 <th class="border p-2 text-left">Media</th>
                 <th class="border p-2 text-left">Max</th>
@@ -128,6 +128,5 @@ onMounted(async () => {
   }
 })
 </script>
-
 
 
