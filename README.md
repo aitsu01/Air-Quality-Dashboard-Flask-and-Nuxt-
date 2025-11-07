@@ -26,19 +26,22 @@ esempio :
   ...
 ]
 
-Ma non tutti i giorni sono “uguali”: un giorno con più misurazioni (sample_size alto) è più affidabile di un giorno con poche.
-Per questo si usa una media ponderata, che tiene conto del “peso” di ogni giorno.
+Non tutti i giorni pesano allo stesso modo: un giorno con più misurazioni (sample_size alto) è più affidabile di uno con poche.
+Per questo il backend calcola una media ponderata, che tiene conto del peso di ciascun giorno.
 
 Formula della media ponderata:
 
-Esempio pratico
-Giorno	average	sample_size	Prodotto
+weighted_average = (Σ(average × sample_size)) / Σ(sample_size)
+
+Esempio
+Giorno	Average	Sample size	Prodotto
 25/10	10.5	250	2625
 26/10	5.3	200	1060
-27/10	0	0	(escluso)
+27/10	0.0	0 (escluso)	—
 
-Totale:
-weighted_average = (2625 + 1060) / (250 + 200) = 3685 / 450 = 8.18
+
+Risultato:
+weighted_average = (2625 + 1060) / (250 + 200) = 8.18
 
 
 
@@ -81,9 +84,32 @@ Backend (Flask) → https://api.zeroc.green/v1/stations/
 
 
 In questo modo:
-- il browser non chiama direttamente l’API esterna (evitando problemi di CORS),
+- il browser non chiama direttamente l’API esterna (evitando problemi di CORS*),
 - Flask controlla e filtra i dati prima di inviarli al frontend,
 - Nuxt si occupa solo della presentazione grafica e dell’esperienza utente.
+
+
+
+*Nota sui problemi di CORS
+
+Il browser, per motivi di sicurezza, blocca automaticamente le richieste verso domini esterni diversi da quello dell’applicazione (es. chiamate dirette da localhost:3000 a api.zeroc.green).
+Questo meccanismo si chiama CORS (Cross-Origin Resource Sharing).
+
+Per evitare questi errori, il backend Flask funge da proxy intermedio:
+
+Il frontend comunica solo con http://localhost:5000/api/...,
+
+Flask inoltra la richiesta all’API esterna,
+
+e restituisce al frontend una risposta “sicura” e con header corretti.
+
+In questo modo:
+
+ si eliminano gli errori di CORS,
+
+ si mantiene il controllo sui dati in ingresso,
+
+🧠si può aggiungere logica (es. media ponderata) prima che i dati arrivino al frontend
 
 ---
 
@@ -163,6 +189,19 @@ Se cloni il repo, basta eseguire:
 cd frontend && npm install && npm run dev
 
 
+# Considerazioni e sviluppi futuri #
 
+Questo progetto dimostra come un’architettura Flask + Nuxt possa integrare calcolo e visualizzazione in modo chiaro, modulare e scalabile.
+L’obiettivo principale — replicare e arricchire le API di ZeroC Green con il calcolo della media ponderata — è pienamente raggiunto, mantenendo un design moderno e leggibile.
+
+In futuro prevedo di:
+
+ Aggiungere un grafico a linee interattivo per la metrica selezionata (con Recharts),
+
+ Implementare un aggiornamento automatico dei dati in tempo reale,
+
+ Espandere il backend con un sistema di caching o database leggero per storicizzare le misurazioni.
+
+ L’obiettivo finale è creare una dashboard completa, efficiente e mantenibile, utile sia a livello didattico che operativo.
 
  
