@@ -109,7 +109,7 @@ In questo modo:
 
  si mantiene il controllo sui dati in ingresso,
 
-🧠si può aggiungere logica (es. media ponderata) prima che i dati arrivino al frontend
+ si può aggiungere logica (es. media ponderata) prima che i dati arrivino al frontend
 
 ---
 
@@ -117,6 +117,22 @@ In sintesi:
 **Flask** = cervello e sicurezza  
 **Nuxt** = interfaccia e interazione 
 
+## Considerazioni e sviluppi futur ##
+
+Questo progetto dimostra come un’architettura Flask + Nuxt possa integrare calcolo e visualizzazione in modo chiaro, modulare e scalabile.
+L’obiettivo principale — replicare e arricchire le API di ZeroC Green con il calcolo della media ponderata — è pienamente raggiunto, mantenendo un design moderno e leggibile.
+
+In futuro prevedo di:
+
+ Aggiungere un grafico a linee interattivo per la metrica selezionata (con Recharts),
+
+ Implementare un aggiornamento automatico dei dati in tempo reale,
+
+ Espandere il backend con un sistema di caching o database leggero per storicizzare le misurazioni.
+
+ L’obiettivo finale è creare una dashboard completa, efficiente e mantenibile, utile sia a livello didattico che operativo.
+
+ 
 # Installazione
 
 ###  Backend (Flask)
@@ -189,19 +205,3 @@ Se cloni il repo, basta eseguire:
 cd frontend && npm install && npm run dev
 
 
-# Considerazioni e sviluppi futuri #
-
-Questo progetto dimostra come un’architettura Flask + Nuxt possa integrare calcolo e visualizzazione in modo chiaro, modulare e scalabile.
-L’obiettivo principale — replicare e arricchire le API di ZeroC Green con il calcolo della media ponderata — è pienamente raggiunto, mantenendo un design moderno e leggibile.
-
-In futuro prevedo di:
-
- Aggiungere un grafico a linee interattivo per la metrica selezionata (con Recharts),
-
- Implementare un aggiornamento automatico dei dati in tempo reale,
-
- Espandere il backend con un sistema di caching o database leggero per storicizzare le misurazioni.
-
- L’obiettivo finale è creare una dashboard completa, efficiente e mantenibile, utile sia a livello didattico che operativo.
-
- 
