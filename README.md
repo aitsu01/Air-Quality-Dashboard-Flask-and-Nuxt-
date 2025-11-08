@@ -14,35 +14,53 @@ Il backend è basato su **Flask (Python)** e funge da proxy per l’API ufficial
 -  Routing client-side con Nuxt
 
 -------------------------------------------------------------------------------------------
-Cos’è la “media ponderata” e perché serve?
+## Cos’è la “media ponderata” e perché serve?
 
-L’API ufficiale di ZeroC Green restituisce, per ogni metrica (es. PM10, NO2, ecc.), una lista con 10 giorni di dati.
+Calcolo della media ponderata
 
-esempio :
-"PM10": [
-  { "date": "2025-10-25", "average": 10.5, "sample_size": 250 },
-  { "date": "2025-10-26", "average": 5.3,  "sample_size": 200 },
-  { "date": "2025-10-27", "average": 0.0,  "sample_size": 0 },
-  ...
-]
+Il backend (Flask) calcola per ogni metrica una media ponderata sugli ultimi 7 giorni con dati validi,
+escludendo quelli con sample_size = 0.
+Questo garantisce un valore più rappresentativo e affidabile della qualità dell’aria.
 
-Non tutti i giorni pesano allo stesso modo: un giorno con più misurazioni (sample_size alto) è più affidabile di uno con poche.
-Per questo il backend calcola una media ponderata, che tiene conto del peso di ciascun giorno.
+Formula
 
-Formula della media ponderata:
+weighted_average = (Σ (average × sample_size)) / (Σ sample_size)
 
-weighted_average = (Σ(average × sample_size)) / Σ(sample_size)
-
-Esempio
-Giorno	Average	Sample size	Prodotto
-25/10	10.5	250	2625
-26/10	5.3	200	1060
-27/10	0.0	0 (escluso)	—
+Esempio visivo:
 
 
-Risultato:
-weighted_average = (2625 + 1060) / (250 + 200) = 8.18
+| Giorno | Average | Sample Size | Considerato nel calcolo? | Prodotto (average × sample_size) |
+| :----- | :------ | :---------- | :----------------------- | :------------------------------- |
+| 25/10  | 12.0    | 200         |  Sì                      | 2400                             |
+| 26/10  | 8.0     | 180         |  Sì                      | 1440                             |
+| 27/10  | 0.0     | 0           |  No (nessun campione)    | —                                |
+| 28/10  | 10.0    | 220         |  Sì                      | 2200                             |
+| 29/10  | 7.0     | 150         |  Sì                      | 1050                             |
+| 30/10  | 0.0     | 0           |  No (nessun campione)    | —                                |
+| 31/10  | 9.0     | 190         |  Sì                      | 1710                             |
 
+Calcolo effettivo
+
+weighted_average = (2400 + 1440 + 2200 + 1050 + 1710) / (200 + 180 + 220 + 150 + 190)
+weighted_average = 8800 / 940 = 9.36
+
+Risultato finale → weighted_avg = 9.36
+
+
+
+Gestione dei casi limite
+
+
+| Situazione                 | Cosa fa il backend              | Cosa mostra il frontend         |
+| :------------------------- | :------------------------------ | :------------------------------ |
+| Tutti i `sample_size = 0`  | `weighted_avg = None`           | “n/d” (non disponibile)         |
+| Meno di 7 giorni validi    | Calcolo sui giorni disponibili  | Media reale sui giorni validi   |
+| Valori parziali o mancanti | Giorni con `0` o `None` esclusi | Nessuna distorsione nel calcolo |
+
+
+Beneficio
+Questa strategia evita che giornate incomplete o senza campioni influenzino la media.
+Il risultato rappresenta solo i giorni effettivamente misurati, rendendo il dato finale più realistico e affidabile
 
 
 
