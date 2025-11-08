@@ -20,62 +20,93 @@
     </div>
 
     <!-- Tabella stazioni -->
-    <div v-if="stations.length" class="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-      <table class="min-w-full border-collapse">
-        <thead class="bg-green-600 text-white text-sm uppercase">
-          <tr>
-            <th class="p-3 text-left w-2"></th>
-            <th class="p-3 text-left">Nome</th>
-            <th class="p-3 text-left">Sito</th>
-            <th class="p-3 text-left">Indirizzo</th>
-            <th class="p-3 text-center">Qualità aria</th>
-            <th class="p-3 text-center">Azioni</th>
-          </tr>
-        </thead>
+     <div v-if="stations.length" class="max-w-6xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
 
-        <tbody>
-          <tr
-            v-for="station in stations"
-            :key="station.id"
-            class="border-b hover:bg-gray-50 transition"
-          >
-            <!-- Banda colore AQI -->
-            <td :class="['w-2', getAirQualityColor(station.aqi)]"></td>
+  <!-- DESKTOP TABLE -->
+  <div class="hidden md:block">
+    <table class="w-full text-sm text-left text-gray-700 border-collapse">
+      <thead class="bg-gradient-to-r from-green-600 to-green-500 text-white text-xs uppercase tracking-wide">
+        <tr>
+          <th class="px-5 py-3 text-center w-2 rounded-tl-xl">#</th>
+          <th class="px-5 py-3">Nome</th>
+          <th class="px-5 py-3">Sito</th>
+          <th class="px-5 py-3">Indirizzo</th>
+          <th class="px-5 py-3 text-center">Qualità aria</th>
+          <th class="px-5 py-3 text-center rounded-tr-xl">Dettagli</th>
+        </tr>
+      </thead>
 
-            <!-- Nome -->
-            <td class="p-3 text-sm font-semibold text-gray-800">
-              {{ station.name }}
-            </td>
+      <tbody>
+        <tr
+          v-for="station in stations"
+          :key="station.id"
+          class="border-b hover:bg-green-50 transition-colors duration-200 even:bg-gray-50"
+        >
+          <td :class="['w-2', getAirQualityColor(station.aqi)]"></td>
+          <td class="px-5 py-3 font-semibold text-gray-900">{{ station.name }}</td>
+          <td class="px-5 py-3 text-gray-600">{{ station.site }}</td>
+          <td class="px-5 py-3 text-gray-500 truncate max-w-[220px]">{{ station.address }}</td>
+          <td class="px-5 py-3 text-center">
+            <span class="px-2.5 py-1 rounded-full text-xs font-medium" :class="getAQIBadge(station.aqi)">
+              {{ getAirQualityLabel(station.aqi) }}
+            </span>
+          </td>
+          <td class="px-5 py-3 text-center">
+            <button
+              @click="goToStation(station.id)"
+              class="text-xs bg-green-100 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-200 hover:scale-105 transition-transform duration-150"
+            >
+              Dettagli →
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-            <!-- Sito -->
-            <td class="p-3 text-sm text-gray-600">{{ station.site }}</td>
+  <!-- MOBILE CARD LIST -->
+  <div class="md:hidden divide-y divide-gray-200">
+    <div
+      v-for="station in stations"
+      :key="station.id"
+      class="p-4 flex flex-col gap-2 hover:bg-green-50 transition"
+    >
+      <!-- Header -->
+      <div class="flex justify-between items-center">
+        <h2 class="font-semibold text-gray-900 text-base">{{ station.name }}</h2>
+        <span class="px-2 py-0.5 text-xs rounded-full font-medium" :class="getAQIBadge(station.aqi)">
+          {{ getAirQualityLabel(station.aqi) }}
+        </span>
+      </div>
 
-            <!-- Indirizzo -->
-            <td class="p-3 text-sm text-gray-500">{{ station.address }}</td>
+      <!-- Info -->
+      <p class="text-sm text-gray-600">{{ station.site }}</p>
+      <p class="text-xs text-gray-500">{{ station.address }}</p>
 
-            <!-- Stato AQI -->
-            <td class="p-3 text-center">
-              <span
-                class="px-2 py-1 rounded-full text-xs font-medium"
-                :class="getAQIBadge(station.aqi)"
-              >
-                {{ getAirQualityLabel(station.aqi) }}
-              </span>
-            </td>
+      <!-- Bottom action -->
+      <div class="flex justify-between items-center mt-2">
+        <div class="flex items-center gap-2 text-xs">
+          <span :class="['inline-block w-2 h-2 rounded-full', getAirQualityColor(station.aqi)]"></span>
+          <span class="text-gray-500">AQI: {{ station.aqi }}</span>
+        </div>
 
-            <!-- Pulsante dettagli -->
-            <td class="p-3 text-center">
-              <button
-                @click="goToStation(station.id)"
-                class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition"
-              >
-                Dettagli →
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <button
+          @click="goToStation(station.id)"
+          class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition"
+        >
+          Dettagli →
+        </button>
+      </div>
     </div>
+  </div>
+</div>
+
+
+    <!--fine tabella stazioni-->
+
+
+
+
   </div>
 </template>
 
