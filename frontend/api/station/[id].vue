@@ -36,14 +36,26 @@
             {{ metric.name }} <span class="text-sm text-gray-500">({{ metric.unit_of_measurement }})</span>
           </h2>
 
+
+
+
           <!-- Box media ponderata -->
           <div
-            v-if="weightedAverages[metric.name]"
-            class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-300"
-          >
-            Media ponderata (7gg): {{ weightedAverages[metric.name].toFixed(2) }}
-          </div>
-        </div>
+  class="px-4 py-2 rounded-full text-sm font-medium border"
+  :class="weightedAverages[metric.name] !== null 
+    ? 'bg-green-100 text-green-800 border-green-300' 
+    : 'bg-gray-100 text-gray-400 border-gray-200 italic'"
+>
+  Media ponderata (7gg): 
+  <span v-if="weightedAverages[metric.name] !== null">
+    {{ weightedAverages[metric.name].toFixed(2) }}
+  </span>
+  <span v-else>n/d</span>
+</div>
+
+
+
+
 
         <!-- Tabella dati -->
         <div class="overflow-x-auto">
