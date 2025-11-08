@@ -23,46 +23,70 @@
      <div v-if="stations.length" class="max-w-6xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
 
   <!-- DESKTOP TABLE -->
-  <div class="hidden md:block">
-    <table class="w-full text-sm text-left text-gray-700 border-collapse">
-      <thead class="bg-gradient-to-r from-green-600 to-green-500 text-white text-xs uppercase tracking-wide">
-        <tr>
-          <th class="px-5 py-3 text-center w-2 rounded-tl-xl">#</th>
-          <th class="px-5 py-3">Nome</th>
-          <th class="px-5 py-3">Sito</th>
-          <th class="px-5 py-3">Indirizzo</th>
-          <th class="px-5 py-3 text-center">Qualità aria</th>
-          <th class="px-5 py-3 text-center rounded-tr-xl">Dettagli</th>
-        </tr>
-      </thead>
+  <!-- DESKTOP TABLE -->
+<div class="hidden md:block">
+  <table class="w-full text-sm text-left text-gray-700 border-collapse">
+    <thead class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wide border-b border-gray-200">
+      <tr>
+        <th class="px-5 py-3 text-left font-semibold">Stazione</th>
+        <th class="px-5 py-3 text-left font-semibold">Sito</th>
+        <th class="px-5 py-3 text-left font-semibold">Indirizzo</th>
+        <th class="px-5 py-3 text-center font-semibold">Qualità aria</th>
+        <th class="px-5 py-3 text-center font-semibold">Azioni</th>
+      </tr>
+    </thead>
 
-      <tbody>
-        <tr
-          v-for="station in stations"
-          :key="station.id"
-          class="border-b hover:bg-green-50 transition-colors duration-200 even:bg-gray-50"
-        >
-          <td :class="['w-2', getAirQualityColor(station.aqi)]"></td>
-          <td class="px-5 py-3 font-semibold text-gray-900">{{ station.name }}</td>
-          <td class="px-5 py-3 text-gray-600">{{ station.site }}</td>
-          <td class="px-5 py-3 text-gray-500 truncate max-w-[220px]">{{ station.address }}</td>
-          <td class="px-5 py-3 text-center">
-            <span class="px-2.5 py-1 rounded-full text-xs font-medium" :class="getAQIBadge(station.aqi)">
-              {{ getAirQualityLabel(station.aqi) }}
-            </span>
-          </td>
-          <td class="px-5 py-3 text-center">
-            <button
-              @click="goToStation(station.id)"
-              class="text-xs bg-green-100 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-200 hover:scale-105 transition-transform duration-150"
-            >
-              Dettagli →
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <tbody>
+      <tr
+        v-for="station in stations"
+        :key="station.id"
+        class="border-b hover:bg-gray-50 transition-colors duration-200 even:bg-gray-50"
+      >
+        <!-- Nome stazione + semaforo -->
+        <td class="px-5 py-3 flex items-center gap-3">
+          <span
+            :class="[
+              'w-3.5 h-3.5 rounded-full inline-block border border-gray-300 shadow-sm',
+              getAirQualityColor(station.aqi)
+            ]"
+          ></span>
+          <span class="font-semibold text-gray-900">{{ station.name }}</span>
+        </td>
+
+        <!-- Sito -->
+        <td class="px-5 py-3 text-gray-600">{{ station.site }}</td>
+
+        <!-- Indirizzo -->
+        <td class="px-5 py-3 text-gray-500 truncate max-w-[250px]">
+          {{ station.address }}
+        </td>
+
+        <!-- Stato AQI -->
+        <td class="px-5 py-3 text-center">
+          <span
+            class="px-2.5 py-1 rounded-full text-xs font-medium"
+            :class="getAQIBadge(station.aqi)"
+          >
+            {{ getAirQualityLabel(station.aqi) }}
+          </span>
+        </td>
+
+        <!-- Pulsante Dettagli -->
+        <td class="px-5 py-3 text-center">
+          <button
+            @click="goToStation(station.id)"
+            class="text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 hover:scale-105 transition-transform duration-150"
+          >
+            Dettagli →
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+  <!-- END DESKTOP TABLE -->
 
   <!-- MOBILE CARD LIST -->
   <div class="md:hidden divide-y divide-gray-200">
