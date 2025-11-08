@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@vueuse/motion": "^3.0.3",
     "axios": "^1.13.1",
+    "framer-motion": "^12.23.24",
     "nuxt": "^4.2.0",
     "recharts": "^3.3.0",
     "vue": "^3.5.22",

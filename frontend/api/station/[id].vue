@@ -1,6 +1,6 @@
 <template>
   <div class="p-8 max-w-6xl mx-auto">
-    <!-- 🔙 Pulsante torna indietro -->
+    <!--  Pulsante torna indietro -->
     <button
       @click="$router.push('/')"
       class="text-blue-600 hover:text-blue-800 mb-6 font-medium"
@@ -14,7 +14,7 @@
         {{ stationData.name }}
       </h1>
       <p class="text-gray-500">
-        📍 {{ stationData.site }} – {{ stationData.address }}
+         {{ stationData.site }} – {{ stationData.address }}
       </p>
     </div>
 
@@ -50,7 +50,7 @@
           <table class="min-w-full text-sm border border-gray-200 rounded-lg">
             <thead class="bg-gray-100 text-gray-700">
               <tr>
-                <th class="border p-2 text-left">📅 Giorno</th>
+                <th class="border p-2 text-left"> Giorno</th>
                 <th class="border p-2 text-left">Min</th>
                 <th class="border p-2 text-left">Media</th>
                 <th class="border p-2 text-left">Max</th>
@@ -94,7 +94,7 @@ const weightedAverages = ref({})
 const loading = ref(true)
 const error = ref(null)
 
-// 🔹 Format date (YYYY-MM-DD → DD/MM/YYYY)
+//  Format date (YYYY-MM-DD → DD/MM/YYYY)
 const formatDate = (date) => {
   const [y, m, d] = date.split('-')
   return `${d}/${m}/${y}`

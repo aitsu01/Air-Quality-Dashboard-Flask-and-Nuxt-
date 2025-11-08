@@ -1,15 +1,11 @@
 <template>
+
+
+
+
   <div class="min-h-screen bg-gray-50 py-10 px-4">
 
- 
 
-    <!-- Header -->
-    <header class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-green-700 mb-1">
-         Dashboard qualità dell'aria
-      </h1>
-      <p class="text-gray-500 text-sm">Stazioni di monitoraggio</p>
-    </header>
 
     <!-- Stato caricamento -->
     <div v-if="loading" class="text-center text-gray-500 mt-8 text-sm">
@@ -19,10 +15,41 @@
       {{ error }}
     </div>
 
+
+
+  <!-- HERO SECTION -->
+<section 
+  class="text-center mb-10 opacity-0 translate-y-6 animate-fade-in-up"
+>
+  <h1 class="text-3xl font-bold text-green-700 mb-2 tracking-tight">
+    Air Quality Monitoring Dashboard
+  </h1>
+
+  <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+
+    Dashboard interattiva per l’analisi della qualità dell’aria basata su dati ZeroC Green, con calcolo delle medie ponderate e indicatori ambientali aggiornati.
+
+  </p>
+</section>
+
+
+    
+
+
     <!-- Tabella stazioni -->
      <div v-if="stations.length" class="max-w-6xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
 
-  <!-- DESKTOP TABLE -->
+  
+
+
+
+
+
+
+
+
+
+
   <!-- DESKTOP TABLE -->
 <div class="hidden md:block">
   <table class="w-full text-sm text-left text-gray-700 border-collapse">
@@ -43,15 +70,27 @@
         class="border-b hover:bg-gray-50 transition-colors duration-200 even:bg-gray-50"
       >
         <!-- Nome stazione + semaforo -->
-        <td class="px-5 py-3 flex items-center gap-3">
-          <span
-            :class="[
-              'w-3.5 h-3.5 rounded-full inline-block border border-gray-300 shadow-sm',
-              getAirQualityColor(station.aqi)
-            ]"
-          ></span>
-          <span class="font-semibold text-gray-900">{{ station.name }}</span>
-        </td>
+         <td class="px-5 py-3 flex items-center gap-3 relative group">
+  <!-- Semaforo con tooltip -->
+  <div class="relative flex items-center justify-center">
+    <span
+      :class="[
+        'w-3.5 h-3.5 rounded-full inline-block border border-gray-300 shadow-sm cursor-pointer transition-transform duration-150 group-hover:scale-110',
+        getAirQualityColor(station.aqi)
+      ]"
+    ></span>
+
+    <!-- Tooltip -->
+    <div
+      class="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-[11px] px-2 py-1 rounded whitespace-nowrap transition-opacity duration-300 shadow-md"
+    >
+      {{ getAirQualityLabel(station.aqi) }}
+    </div>
+  </div>
+
+  <span class="font-semibold text-gray-900">{{ station.name }}</span>
+</td>
+
 
         <!-- Sito -->
         <td class="px-5 py-3 text-gray-600">{{ station.site }}</td>
