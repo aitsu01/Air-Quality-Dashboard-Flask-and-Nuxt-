@@ -135,7 +135,7 @@ In sintesi:
 **Flask** = cervello e sicurezza  
 **Nuxt** = interfaccia e interazione 
 
-## Considerazioni e sviluppi futur ##
+## Considerazioni e sviluppi futuri ##
 
 Questo progetto dimostra come un’architettura Flask + Nuxt possa integrare calcolo e visualizzazione in modo chiaro, modulare e scalabile.
 L’obiettivo principale — replicare e arricchire le API di ZeroC Green con il calcolo della media ponderata — è pienamente raggiunto, mantenendo un design moderno e leggibile.
