@@ -11,19 +11,33 @@ BASE_URL = "https://api.zeroc.green/v1/stations/"
 @app.route("/api/stations/<station_id>")
 def get_station_details(station_id):
     try:
-        resp = requests.get(f"https://api.zeroc.green/v1/stations/{station_id}", timeout=10)
+        #  Richiesta API esterna
+        resp = requests.get(f"{BASE_URL}{station_id}", timeout=10)
         resp.raise_for_status()
         data = resp.json()
 
-        # Calcolo media ponderata per ogni metrica (ultimi 7 giorni)
+        #  Cicla su ogni metrica e calcola media ponderata
         for metric in data.get("metrics", []):
             values = metric.get("data_points", [])
-            valid = [v for v in values[-7:] if v.get("sample_size", 0) > 0]
-            if valid:
-                total_weight = sum(v["sample_size"] for v in valid)
-                weighted_avg = sum(v["average"] * v["sample_size"] for v in valid) / total_weight
+
+            #  Prendi solo gli ultimi 10 giorni (come da specifica)
+            last_10_days = values[-10:]
+
+            # Filtra solo i giorni validi con sample_size > 0
+            valid_days = [v for v in last_10_days if v.get("sample_size", 0) > 0]
+
+            #  Prendi gli ultimi 7 giorni disponibili
+            last_7_days = valid_days[-7:]
+
+            
+            if last_7_days:
+                total_weight = sum(v["sample_size"] for v in last_7_days)
+                weighted_sum = sum(v["average"] * v["sample_size"] for v in last_7_days)
+                weighted_avg = weighted_sum / total_weight if total_weight > 0 else None
             else:
-                weighted_avg = None
+                weighted_avg = None  
+
+            
             metric["weighted_avg"] = weighted_avg
 
         return jsonify(data)
@@ -32,16 +46,17 @@ def get_station_details(station_id):
         return jsonify({"error": f"Errore nel recupero stazione: {str(e)}"}), 500
 
 
+
 @app.route("/api/stations")
 def get_stations():
-    """Proxy per elenco stazioni"""
+    
     try:
-        # Chiamata diretta all'endpoint ufficiale
+        
         resp = requests.get(f"{BASE_URL}", timeout=10)
         resp.raise_for_status()
         data = resp.json()
 
-        # L'API restituisce {"stations": [...]} → estraiamo la lista
+        
         stations = data.get("stations", data)
         return jsonify(stations)
     except requests.RequestException as e:
@@ -53,4 +68,3 @@ def get_stations():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
