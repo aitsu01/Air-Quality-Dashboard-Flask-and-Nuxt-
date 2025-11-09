@@ -221,5 +221,3 @@ Il progetto è 100% compatibile con Nuxt 4.x e Vite.
 Se cloni il repo, basta eseguire:
 
 cd frontend && npm install && npm run dev
-
-
