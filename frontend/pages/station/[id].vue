@@ -14,29 +14,65 @@
         {{ stationData.name }}
       </h1>
       <p class="text-gray-500">
-         {{ stationData.site }} – {{ stationData.address }}
+        {{ stationData.site }} – {{ stationData.address }}
       </p>
+    </div>
+
+    <!-- 📊 Selezione metrica + grafico -->
+    <div v-if="stationData?.metrics" class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <label class="text-gray-700 text-sm font-medium mr-2">Seleziona metrica:</label>
+      <select v-model="selectedMetric" class="border rounded-md p-2 text-sm">
+        <option v-for="m in stationData.metrics" :key="m.name" :value="m.name">
+          {{ m.name }}
+        </option>
+      </select>
+
+      <!-- Grafico Chart.js -->
+      <div v-if="chartData" class="mt-6">
+        <Line :data="chartData" :options="chartOptions" />
+
+        <!-- 🔹 Legenda AQI -->
+<div class="mt-4 flex justify-center gap-4 text-sm">
+  <div class="flex items-center gap-2">
+    <span class="inline-block w-4 h-4 rounded-full bg-green-400"></span>
+    <span>Buona</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="inline-block w-4 h-4 rounded-full bg-yellow-400"></span>
+    <span>Moderata</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="inline-block w-4 h-4 rounded-full bg-orange-400"></span>
+    <span>Scadente</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="inline-block w-4 h-4 rounded-full bg-red-500"></span>
+    <span>Cattiva</span>
+  </div>
+</div>
+
+      </div>
     </div>
 
     <!-- Loading / Error -->
     <div v-if="loading" class="text-center text-gray-600">Caricamento dati...</div>
     <div v-if="error" class="text-center text-red-600">{{ error }}</div>
 
-    <!-- Se ci sono metriche -->
+    <!-- Tabella dati -->
     <div v-if="stationData?.metrics" class="space-y-12">
-      <!-- Loop su ogni metrica -->
       <div
         v-for="metric in stationData.metrics"
         :key="metric.name"
         class="border border-gray-200 rounded-2xl p-6 shadow-sm bg-white"
       >
-        <!-- Titolo metrica -->
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-2xl font-semibold text-gray-800">
-            {{ metric.name }} <span class="text-sm text-gray-500">({{ metric.unit_of_measurement }})</span>
+            {{ metric.name }}
+            <span class="text-sm text-gray-500">
+              ({{ metric.unit_of_measurement }})
+            </span>
           </h2>
 
-          <!-- Box media ponderata -->
           <div
             v-if="weightedAverages[metric.name]"
             class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-300"
@@ -45,12 +81,11 @@
           </div>
         </div>
 
-        <!-- Tabella dati -->
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm border border-gray-200 rounded-lg">
             <thead class="bg-gray-100 text-gray-700">
               <tr>
-                <th class="border p-2 text-left"> Giorno</th>
+                <th class="border p-2 text-left">Giorno</th>
                 <th class="border p-2 text-left">Min</th>
                 <th class="border p-2 text-left">Media</th>
                 <th class="border p-2 text-left">Max</th>
@@ -75,45 +110,79 @@
           </table>
         </div>
 
-        <!-- Descrizione -->
-        <p v-if="metric.description" class="mt-3 text-sm text-gray-500" v-html="metric.description"></p>
+        <p
+          v-if="metric.description"
+          class="mt-3 text-sm text-gray-500"
+          v-html="metric.description"
+        ></p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { Line } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale
+} from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
 
 const route = useRoute()
 const stationId = route.params.id
 
 const stationData = ref(null)
+const selectedMetric = ref(null)
 const weightedAverages = ref({})
 const loading = ref(true)
 const error = ref(null)
 
-// 🔹 Format date (YYYY-MM-DD → DD/MM/YYYY)
 const formatDate = (date) => {
   const [y, m, d] = date.split('-')
   return `${d}/${m}/${y}`
+}
+
+const chartData = computed(() => {
+  const metric = stationData.value?.metrics.find(m => m.name === selectedMetric.value)
+  if (!metric) return null
+
+  return {
+    labels: metric.data_points.slice(-10).map(d => formatDate(d.date)),
+    datasets: [
+      { label: 'Min', data: metric.data_points.map(d => d.min), borderColor: '#60a5fa', tension: 0.3 },
+      { label: 'Media', data: metric.data_points.map(d => d.average), borderColor: '#22c55e', tension: 0.3 },
+      { label: 'Max', data: metric.data_points.map(d => d.max), borderColor: '#f97316', tension: 0.3 }
+    ]
+  }
+})
+
+const chartOptions = {
+  responsive: true,
+  plugins: { legend: { position: 'bottom' } },
+  scales: { y: { beginAtZero: true } }
 }
 
 onMounted(async () => {
   try {
     const res = await fetch(`http://localhost:5000/api/stations/${stationId}`)
     const data = await res.json()
-
     if (data.error) throw new Error(data.error)
-    stationData.value = data
 
-    // Calcolo media ponderata (se il backend non la calcola già)
+    stationData.value = data
+    selectedMetric.value = data.metrics[0]?.name
+
     const avg = {}
     for (const metric of data.metrics) {
-      const valid = metric.data_points
-        .slice(-7)
-        .filter((v) => v.sample_size > 0)
+      const valid = metric.data_points.slice(-7).filter(v => v.sample_size > 0)
       if (valid.length) {
         const total = valid.reduce((a, v) => a + v.average * v.sample_size, 0)
         const weight = valid.reduce((a, v) => a + v.sample_size, 0)
@@ -128,5 +197,9 @@ onMounted(async () => {
   }
 })
 </script>
+
+
+
+
 
 

@@ -12,10 +12,12 @@
   "dependencies": {
     "@vueuse/motion": "^3.0.3",
     "axios": "^1.13.1",
+    "chart.js": "^4.5.1",
     "framer-motion": "^12.23.24",
     "nuxt": "^4.2.0",
-    "recharts": "^3.3.0",
+    "recharts": "^3.5.0",
     "vue": "^3.5.22",
+    "vue-chartjs": "^5.3.3",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
