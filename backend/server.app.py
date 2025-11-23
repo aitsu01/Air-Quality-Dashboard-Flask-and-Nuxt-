@@ -10,6 +10,7 @@ BASE_URL = "https://api.zeroc.green/v1/stations/"
 
 @app.route("/api/stations/<station_id>")
 def get_station_details(station_id):
+    print(f" Richiesta ricevuta per ID: {station_id}")
     try:
         #  Richiesta API esterna
         resp = requests.get(f"{BASE_URL}{station_id}", timeout=10)
